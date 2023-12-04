@@ -1,0 +1,23 @@
+[Unit]
+Description=kube-router is a k8s routing and firewall solution
+Documentation=https://www.kube-router.io/
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/kube-router \
+    --run-router=true \
+    --run-firewall=true \
+    --hairpin-mode=true \
+    --hostname-override=${K8S_NODE} \
+    --kubeconfig=/etc/kubernetes/pki/kube-router.kubeconfig
+Restart=always
+RestartSec=5
+Delegate=yes
+KillMode=process
+OOMScoreAdjust=-999
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target

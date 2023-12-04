@@ -1,0 +1,19 @@
+[req]
+req_extensions = req_extensions
+distinguished_name = req_distinguished_name
+prompt = no
+
+[req_distinguished_name]
+CN = system:kube-proxy
+O  = system:node-proxier
+
+[req_extensions]
+basicConstraints     = CA:FALSE
+extendedKeyUsage     = clientAuth, serverAuth
+keyUsage             = critical, digitalSignature, keyEncipherment
+nsCertType           = client
+nsComment            = "Kube Proxy Certificate"
+subjectAltName       = DNS:kube-proxy, IP:127.0.0.1
+subjectKeyIdentifier = hash
+
+[v3_ext]

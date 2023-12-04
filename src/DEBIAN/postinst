@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+/usr/bin/systemctl daemon-reload
+
+/usr/bin/systemctl enable \
+  etcd \
+  kube-apiserver kube-controller-manager kube-scheduler \
+  kube-proxy kubelet kube-router
+
+/usr/bin/systemctl start \
+  etcd \
+  kube-apiserver kube-controller-manager kube-scheduler
+
+sleep 10
+
+for config in `ls /etc/kubernetes/k8s/*.yaml`; do
+  kubectl --kubeconfig /etc/kubernetes/pki/kube-admin.kubeconfig \
+    apply \
+    -f "${config}"
+done
+
+/usr/bin/systemctl start \
+  kube-proxy kubelet kube-router

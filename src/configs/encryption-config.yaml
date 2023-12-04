@@ -1,0 +1,50 @@
+---
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+  - resources:
+      - pandas.awesome.bears.example # a custom resource API
+    providers:
+      # This configuration does not provide data confidentiality. The first
+      # configured provider is specifying the "identity" mechanism, which
+      # stores resources as plain text.
+      #
+      - identity: { } # plain text, in other words NO encryption
+  - resources:
+      - secrets
+      - configmaps
+    providers:
+      - aesgcm:
+          keys:
+            - name: key1
+              secret: ${ENCRYPTION_KEY_1}
+            - name: key2
+              secret: ${ENCRYPTION_KEY_2}
+      - aescbc:
+          keys:
+            - name: key3
+              secret: ${ENCRYPTION_KEY_3}
+            - name: key4
+              secret: ${ENCRYPTION_KEY_4}
+      - secretbox:
+          keys:
+            - name: key5
+              secret: ${ENCRYPTION_KEY_5}
+  - resources:
+      - events
+    providers:
+      - identity: {} # do not encrypt Events even though *.* is specified below
+  - resources:
+      - '*.apps' # wildcard match requires Kubernetes 1.27 or later
+    providers:
+      - aescbc:
+          keys:
+            - name: key6
+              secret: ${ENCRYPTION_KEY_6}
+  - resources:
+      - '*.*' # wildcard match requires Kubernetes 1.27 or later
+    providers:
+      - aescbc:
+          keys:
+            - name: key7
+              secret: ${ENCRYPTION_KEY_7}

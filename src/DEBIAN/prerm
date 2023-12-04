@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+/usr/bin/systemctl stop \
+  etcd \
+  kube-apiserver kube-controller-manager kube-scheduler \
+  kube-proxy kubelet kube-router
+
+/usr/local/bin/kube-proxy --cleanup
+
+/usr/bin/systemctl disable \
+  etcd \
+  kube-apiserver kube-controller-manager kube-scheduler \
+  kube-proxy kubelet kube-router
+

@@ -1,0 +1,8 @@
+Package: k8s-single-node
+Version: 1.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: socat, conntrack, ipset
+Maintainer: Robson Jr <contato@robsonjr.com.br>
+Description: A package to deploy k8s single node

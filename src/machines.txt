@@ -1,0 +1,1 @@
+INSTANCE_IP kubernetes.local node-master 10.200.0.0/24

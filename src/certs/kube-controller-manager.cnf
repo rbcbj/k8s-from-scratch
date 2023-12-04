@@ -1,0 +1,19 @@
+[req]
+req_extensions = req_extensions
+distinguished_name = req_distinguished_name
+prompt = no
+
+[req_distinguished_name]
+CN = system:kube-controller-manager
+O  = system:kube-controller-manager
+
+[req_extensions]
+basicConstraints     = CA:FALSE
+extendedKeyUsage     = clientAuth, serverAuth
+keyUsage             = critical, digitalSignature, keyEncipherment
+nsCertType           = client
+nsComment            = "Kube Controller Manager Certificate"
+subjectAltName       = DNS:kube-proxy, IP:127.0.0.1
+subjectKeyIdentifier = hash
+
+[v3_ext]

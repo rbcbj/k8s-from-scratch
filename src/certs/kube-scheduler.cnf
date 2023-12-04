@@ -1,0 +1,19 @@
+[req]
+req_extensions = req_extensions
+distinguished_name = req_distinguished_name
+prompt = no
+
+[req_distinguished_name]
+CN = system:kube-scheduler
+O  = system:kube-scheduler
+
+[req_extensions]
+basicConstraints     = CA:FALSE
+extendedKeyUsage     = clientAuth, serverAuth
+keyUsage             = critical, digitalSignature, keyEncipherment
+nsCertType           = client
+nsComment            = "Kube Scheduler Certificate"
+subjectAltName       = DNS:kube-scheduler, IP:127.0.0.1
+subjectKeyIdentifier = hash
+
+[v3_ext]

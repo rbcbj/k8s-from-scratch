@@ -1,0 +1,18 @@
+[req]
+req_extensions = req_extensions
+distinguished_name = req_distinguished_name
+prompt = no
+
+[req_distinguished_name]
+CN = kube-admin
+O = system:masters
+
+[req_extensions]
+basicConstraints     = CA:FALSE
+extendedKeyUsage     = clientAuth
+keyUsage             = critical, digitalSignature, keyEncipherment
+nsCertType           = client
+nsComment            = "Admin Client Certificate"
+subjectKeyIdentifier = hash
+
+[v3_ext]

@@ -1,0 +1,17 @@
+[req]
+req_extensions = req_extensions
+distinguished_name = req_distinguished_name
+prompt = no
+
+[req_distinguished_name]
+CN = kube-router
+
+[req_extensions]
+basicConstraints     = CA:FALSE
+extendedKeyUsage     = clientAuth
+keyUsage             = critical, digitalSignature, keyEncipherment
+nsCertType           = client
+nsComment            = "kube-router Client Certificate"
+subjectKeyIdentifier = hash
+
+[v3_ext]
