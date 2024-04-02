@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+if [[ ! -f "/usr/local/sbin/kube-proxy" ]]; then
+  if [[ -f "/tmp/downloads/kube-proxy" ]]; then
+    cp /tmp/downloads/kube-proxy /usr/local/sbin/kube-proxy
+    chmod +x /usr/local/sbin/kube-proxy
+  else
+    echo ":: could not find kube-proxy"
+  fi
+fi
+
+# Kube Proxy
+#
+cp "/usr/src/kubernetes/services/kube-proxy.service"              "/etc/systemd/system/kube-proxy.service"
+envsubst < "/usr/src/kubernetes/configs/kube-proxy-config.yaml" > "/etc/kubernetes/config/kube-proxy-config.yaml"

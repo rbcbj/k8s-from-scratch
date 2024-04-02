@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+cp "/tmp/downloads/kube-scheduler" \
+  "/usr/local/sbin"
+chmod +x "/usr/local/sbin/kube"*
+
+mkdir -p "/etc/systemd/system/"
+cp "/usr/src/kubernetes/services/kube-scheduler.service"       "/etc/systemd/system/kube-scheduler.service"
+
+mkdir -p "/etc/kubernetes/config"
+envsubst < "/usr/src/kubernetes/configs/kube-scheduler.yaml" > "/etc/kubernetes/config/kube-scheduler.yaml"
+
+# Configure Api Server
+mkdir -p "/var/lib/kubernetes/"

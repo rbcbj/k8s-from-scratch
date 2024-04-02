@@ -6,6 +6,6 @@
 
 alias k="kubectl --kubeconfig /etc/kubernetes/pki/kube-admin.kubeconfig"
 
-kubectl --kubeconfig /etc/kubernetes/pki/kube-admin.kubeconfig \
+/usr/local/bin/kubectl --kubeconfig /etc/kubernetes/pki/kube-admin.kubeconfig \
   apply \
   -f /etc/kubernetes/config/kube-apiserver-to-kubelet.yaml

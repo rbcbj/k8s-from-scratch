@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+CONTAINERD_VERSION="containerd-1.7.8-linux-amd64.tar.gz"
+CNI_PLUGIN_VERSION="cni-plugins-linux-amd64-v1.3.0.tgz"
+CRICTL_VERSION="crictl-v1.28.0-linux-amd64.tar.gz"
+
+mkdir -p \
+  "/etc/containerd/" \
+  "/etc/kubernetes/config" \
+  "/etc/kubernetes/manifests" \
+  "/etc/systemd/system/" \
+  "/opt/cni/bin" \
+  "/etc/cni/net.d" \
+  "/var/lib/kubelet" \
+  "/var/lib/kubernetes" \
+  "/var/run/kubernetes" \
+  "/bin/" \
+  "/usr/local/sbin/"
+
+# containerd
+#
+mkdir -p "/tmp/containerd"
+tar -xvf "/tmp/downloads/${CONTAINERD_VERSION}" -C "/tmp/containerd"
+mv "/tmp/containerd/bin/"* "/usr/local/sbin/"
+rm -rf "/tmp/containerd"
+
+cp "/tmp/downloads/runc.amd64" "/usr/local/sbin/runc"
+
+cp "/usr/src/kubernetes/configs/containerd-config.toml" "/etc/containerd/config.toml"
+cp "/usr/src/kubernetes/services/containerd.service"    "/etc/systemd/system/"
+
+# cni plugins
+#
+tar -xvf "/tmp/downloads/${CNI_PLUGIN_VERSION}" -C "/opt/cni/bin/"
+
+# https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/#installation
+
+envsubst < "/usr/src/kubernetes/configs/10-bridge.conf" > "/etc/cni/net.d/10-bridge.conf"
+cp "/usr/src/kubernetes/configs/99-loopback.conf"         "/etc/cni/net.d/"
+
+# crictl
+#
+tar -xvf "/tmp/downloads/${CRICTL_VERSION}" -C "/usr/local/sbin/"
+
+cat <<CRICTL | tee "${DIST_DIR}/etc/crictl.yaml"
+runtime-endpoint: unix:///var/run/containerd/containerd.sock
+image-endpoint: unix:///var/run/containerd/containerd.sock
+timeout: 10
+CRICTL
+
+chmod +x "/usr/local/sbin/"*

@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+# https://kubernetes.io/docs/concepts/overview/components/
+certs=( \
+  "kube-admin" \
+  "service-accounts" \
+  # node
+  "kube-proxy" "kubelet" \
+  "kube-router" \
+  # control plane
+  "kube-apiserver" "kube-scheduler" "kube-controller-manager" \
+)
+
+# https://kubernetes.io/docs/tasks/administer-cluster/certificates/#openssl
+# https://kubernetes.io/docs/setup/best-practices/certificates/
+for cert in ${certs[*]}; do
+  echo ":: processing $cert"
+
+  /usr/local/scripts/pki_sign "$cert"
+
+  if [[ $cert == "kubelet" ]]; then
+    # node kubeconfig
+    /usr/local/scripts/kubeconfig "${K8S_CLUSTER}" "kubelet" "system:node:${K8S_NODE}"
+  elif [[ $cert == "kube-proxy" ]]; then
+    # kube-proxy kubeconfig
+    /usr/local/scripts/kubeconfig "${K8S_CLUSTER}" "kube-proxy" "system:kube-proxy"
+  elif [[ $cert == "kube-controller-manager" ]]; then
+    # kube-controller-manager kubeconfig
+    /usr/local/scripts/kubeconfig "${K8S_CLUSTER}" "kube-controller-manager" "system:kube-controller-manager"
+  elif [[ $cert == "kube-scheduler" ]]; then
+    # kube-scheduler kubeconfig
+    /usr/local/scripts/kubeconfig "${K8S_CLUSTER}" "kube-scheduler" "system:kube-scheduler"
+  elif [[ $cert == "kube-admin" ]]; then
+    # kube-admin kubeconfig
+    /usr/local/scripts/kubeconfig "${K8S_CLUSTER}" "kube-admin" "kube-admin"
+  elif [[ $cert == "kube-router" ]]; then
+    # kube-router kubeconfig
+    /usr/local/scripts/kubeconfig "${K8S_CLUSTER}" "kube-router" "kube-router"
+  fi
+done
+

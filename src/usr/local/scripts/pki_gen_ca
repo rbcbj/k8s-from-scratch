@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+mkdir -p "/etc/kubernetes/pki/"
+
+openssl genrsa \
+  -out "/etc/kubernetes/pki/ca.key" \
+  4096
+
+openssl req \
+  -x509 -new -sha512 -nodes \
+  -key "/etc/kubernetes/pki/ca.key" -days 3653 \
+  -config "/usr/src/kubernetes/certs/ca.cnf" \
+  -out "/etc/kubernetes/pki/ca.crt"

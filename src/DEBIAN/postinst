@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+/usr/local/scripts/bootstrap_settings
+/usr/local/scripts/bootstrap_certs
+
 /usr/bin/systemctl daemon-reload
 
 /usr/bin/systemctl enable \
@@ -11,13 +14,15 @@
   etcd \
   kube-apiserver kube-controller-manager kube-scheduler
 
-sleep 10
+sleep 5
 
-for config in `ls /etc/kubernetes/k8s/*.yaml`; do
-  kubectl --kubeconfig /etc/kubernetes/pki/kube-admin.kubeconfig \
+for config in `ls /usr/src/kubernetes/k8s/*.yaml`; do
+  /usr/local/sbin/kubectl --kubeconfig /etc/kubernetes/pki/kube-admin.kubeconfig \
     apply \
     -f "${config}"
 done
+
+sleep 5
 
 /usr/bin/systemctl start \
   kube-proxy kubelet kube-router

@@ -6,14 +6,18 @@ The main focus for this repo is to enable new users to understand how kubernetes
 
 ## Caveats
 
-- You must edit `src/machines.txt` file and update the `INSTANCE_IP` variable with the instance ip.
-
-- You must add the `kubernetes.local` to your `hosts` file
+Sometimes on a fresh install of your deb build, you need to:
 
 ```
-cat <<HOSTS | tee -a /etc/hosts2
-127.0.0.1 kubernetes.local
-HOSTS
+$ apt-get install -f
+```
+
+to fix dependencies
+
+and also, if you have any problem with generating the certs, proceed with reinstall without removing:
+
+```
+$ dpkg -i <package>.deb
 ```
 
 ## Usage

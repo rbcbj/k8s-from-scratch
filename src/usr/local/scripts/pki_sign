@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+CERT_NAME=${1}
+
+envsubst < "/usr/src/kubernetes/certs/${CERT_NAME}.cnf" > "/tmp/${CERT_NAME}-generated.cnf"
+
+openssl genrsa -out "/etc/kubernetes/pki/${CERT_NAME}.key" 4096
+
+openssl req -new -key "/etc/kubernetes/pki/${CERT_NAME}.key" \
+  -out "/etc/kubernetes/pki/${CERT_NAME}.csr" \
+  -config "/tmp/${CERT_NAME}-generated.cnf"
+
+# openssl req  -noout -text -in "${i}.csr" | less
+
+openssl x509 -req -days 3653 \
+  -in "/etc/kubernetes/pki/${CERT_NAME}.csr" \
+  -extfile "/tmp/${CERT_NAME}-generated.cnf"\
+  -extensions v3_ext \
+  -sha256 \
+  -CA "/etc/kubernetes/pki/ca.crt" \
+  -CAkey "/etc/kubernetes/pki/ca.key" \
+  -CAcreateserial \
+  -out "/etc/kubernetes/pki/${CERT_NAME}.crt"
+
+  # openssl x509  -noout -text -in "${i}.crt" | less
+
+rm "/tmp/${CERT_NAME}-generated.cnf"

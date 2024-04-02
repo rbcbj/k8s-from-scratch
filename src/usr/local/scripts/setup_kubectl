@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+if [[ ! -f "/usr/local/sbin/kubectl" ]]; then
+  if [[ -f "/tmp/downloads/kubectl" ]]; then
+    cp /tmp/downloads/kubectl /usr/local/sbin/kubectl
+    chmod +x /usr/local/sbin/kubectl
+  else
+    echo ":: could not find kubectl"
+  fi
+fi

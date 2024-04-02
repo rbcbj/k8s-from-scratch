@@ -1,0 +1,24 @@
+[Unit]
+Description=Kubernetes Controller Manager
+Documentation=https://github.com/kubernetes/kubernetes
+
+[Service]
+EnvironmentFile=/etc/kubernetes/config.env
+ExecStart=/usr/local/sbin/kube-controller-manager \
+  --bind-address=0.0.0.0 \
+  --allocate-node-cidrs=true \
+  --cluster-cidr=${K8S_CLUSTER_POD_SUBNET} \
+  --cluster-name=${K8S_CLUSTER} \
+  --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt \
+  --cluster-signing-key-file=/etc/kubernetes/pki/ca.key \
+  --kubeconfig=/etc/kubernetes/pki/kube-controller-manager.kubeconfig \
+  --root-ca-file=/etc/kubernetes/pki/ca.crt \
+  --service-account-private-key-file=/etc/kubernetes/pki/service-accounts.key \
+  --service-cluster-ip-range=${K8S_CLUSTER_IP_RANGE} \
+  --use-service-account-credentials=true \
+  --v=2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

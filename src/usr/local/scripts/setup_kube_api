@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+# Generating the Data Encryption Config and Key
+# https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data
+# https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#understanding-the-encryption-at-rest-configuration]
+# Copy the encryption-config.yaml encryption config file to each controller instance
+mkdir -p "/etc/kubernetes/config/"
+envsubst < "/usr/src/kubernetes/configs/encryption-config.yaml" > "/etc/kubernetes/config/encryption-config.yaml"
+
+
+cp "/tmp/downloads/kube-apiserver" \
+  "/usr/local/sbin"
+chmod +x "/usr/local/sbin/kube"*
+
+mkdir -p "/etc/systemd/system/"
+cp "/usr/src/kubernetes/services/kube-apiserver.service" "/etc/systemd/system/kube-apiserver.service"
+
+# Configure Api Server
+mkdir -p "/var/lib/kubernetes/"

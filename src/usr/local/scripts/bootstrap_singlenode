@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+echo "America/Fortaleza" | tee /etc/timezone
+export DEBIAN_FRONTEND=noninteractive
+
+# Environment bootstrap
+bootstrap_deps
+bootstrap_downloads
+bootstrap_settings
+
+# setup kubectl
+setup_kubectl
+
+# Setup certificates
+pki_gen_ca
+
+# this is performed in postinst to bootstrap node certificates
+# bootstrap_certs
+
+# Setup storage
+setup_etcd
+
+# Setup Control Plane
+setup_kube_api
+setup_kube_controller_manager
+setup_kube_scheduler
+
+# Setup Worker Node
+setup_containerd
+setup_kube_router
+setup_kubelet
+setup_kube_proxy

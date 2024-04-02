@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+KUBE_ROUTER_VERSION="kube-router_2.0.1_linux_amd64.tar.gz"
+
+# only extracts kube-router
+tar zxvf "/tmp/downloads/${KUBE_ROUTER_VERSION}" -C "/usr/local/sbin" kube-router
+
+# disabled default bridge for cni plugin, because we will use kube-router
+mv "/etc/cni/net.d/10-bridge.conf" "/etc/cni/net.d/10-bridge.conf-disabled"
+
+cp "/usr/src/kubernetes/services/kube-router.service"           "/etc/systemd/system/kube-router.service"
+envsubst < "/usr/src/kubernetes/configs/10-kuberouter.conf"   > "/etc/cni/net.d/10-kuberouter.conf"

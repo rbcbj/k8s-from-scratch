@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+pushd "/tmp/downloads"
+
+export ETCD_VERSION="etcd-v3.4.27-linux-amd64"
+
+mkdir -p "/usr/local/sbin"
+tar zxvf "${ETCD_VERSION}.tar.gz"
+mv "${ETCD_VERSION}/etcd"* "/usr/local/sbin"
+rm -rf "${ETCD_VERSION}"
+
+mkdir -p "/etc/etcd" \
+         "/var/lib/etcd"
+
+chmod 700 "/var/lib/etcd"
+
+ln -sf "/etc/kubernetes/pki/ca.crt"             "/etc/etcd/ca.crt"
+ln -sf "/etc/kubernetes/pki/kube-apiserver.key" "/etc/etcd/kube-apiserver.key"
+ln -sf "/etc/kubernetes/pki/kube-apiserver.crt" "/etc/etcd/kube-apiserver.crt"
+
+#cp "/etc/kubernetes/pki/ca.crt" \
+# "/etc/kubernetes/pki/kube-apiserver.key" \
+# "/etc/kubernetes/pki/kube-apiserver.crt" \
+# "/etc/etcd/"
+
+mkdir -p "/etc/systemd/system/"
+cp "/usr/src/kubernetes/services/etcd.service" "/etc/systemd/system/"

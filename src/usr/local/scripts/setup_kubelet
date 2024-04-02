@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+. /usr/local/scripts/common.sh
+
+if [[ ! -f "/usr/local/sbin/kubelet" ]]; then
+  if [[ -f "/tmp/downloads/kubelet" ]]; then
+    cp /tmp/downloads/kubelet /usr/local/sbin/kubelet
+    chmod +x /usr/local/sbin/kubelet
+  else
+    echo ":: could not find kubelet"
+  fi
+fi
+
+# Kubelet
+cp "/usr/src/kubernetes/services/kubelet.service"              "/etc/systemd/system/kubelet.service"
+envsubst < "/usr/src/kubernetes/configs/kubelet-config.yaml" > "/etc/kubernetes/config/kubelet-config.yaml"

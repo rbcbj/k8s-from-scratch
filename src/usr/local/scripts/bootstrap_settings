@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+CONFIG_DIR="/etc/kubernetes"
+CONFIG_FILE="${CONFIG_DIR}/config.env"
+
+mkdir -p ${CONFIG_DIR}
+
+cat <<CONFIG | tee $CONFIG_FILE
+# cluster config
+K8S_CLUSTER=k8s-use1-prod-shared-001
+K8S_CLUSTER_DOMAIN=kubernetes.local
+
+# node config
+K8S_NODE=$(hostname)
+K8S_NODE_IP=$(ip -f inet addr show eth0 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p' | head -n 1)
+
+# this should match on both kube-apiserver and kube-controller-manager
+K8S_CLUSTER_IP_RANGE=10.32.0.0/24
+K8S_CLUSTER_IP_DNS=10.32.0.10
+K8S_CLUSTER_POD_SUBNET=10.200.0.0/24
+
+ENCRYPTION_KEY_1="$(head -c 32 /dev/urandom | base64)"
+ENCRYPTION_KEY_2="$(head -c 32 /dev/urandom | base64)"
+ENCRYPTION_KEY_3="$(head -c 32 /dev/urandom | base64)"
+ENCRYPTION_KEY_4="$(head -c 32 /dev/urandom | base64)"
+ENCRYPTION_KEY_5="$(head -c 32 /dev/urandom | base64)"
+ENCRYPTION_KEY_6="$(head -c 32 /dev/urandom | base64)"
+ENCRYPTION_KEY_7="$(head -c 32 /dev/urandom | base64)"
+CONFIG
+
+. $CONFIG_FILE
+
+sed '/kubernetes config start/,/kubernetes config end/d' /etc/hosts | tee /tmp/hosts
+cat /tmp/hosts \
+ | sed '/./,$!d' \
+ | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' \
+ | tee /etc/hosts
+rm /tmp/hosts
+
+cat <<HOST | tee -a "/etc/hosts"
+
+# kubernetes config start
+127.0.0.1 ${K8S_CLUSTER_DOMAIN}
+127.0.0.1 ${K8S_NODE}
+# kubernetes config end
+
+HOST

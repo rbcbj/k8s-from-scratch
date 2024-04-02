@@ -1,0 +1,14 @@
+[Unit]
+Description=Kubernetes Kube Proxy
+Documentation=https://github.com/kubernetes/kubernetes
+
+[Service]
+EnvironmentFile=/etc/kubernetes/config.env
+ExecStart=/usr/local/sbin/kube-proxy \
+  --config=/etc/kubernetes/config/kube-proxy-config.yaml \
+  --hostname-override=${K8S_NODE}
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
