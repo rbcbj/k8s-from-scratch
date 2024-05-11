@@ -6,18 +6,18 @@ The main focus for this repo is to enable new users to understand how kubernetes
 
 ## Caveats
 
-Sometimes on a fresh install of your deb build, you need to:
-
+You can proceed with the build of the `deb` package with: 
 ```
-$ apt-get install -f
+$ make bundle
 ```
 
-to fix dependencies
-
-and also, if you have any problem with generating the certs, proceed with reinstall without removing:
-
+then, proceed with the install:
 ```
 $ dpkg -i <package>.deb
+```
+to fix missing packages, proceed with:
+```
+$ apt-get install -f
 ```
 
 ## Usage
