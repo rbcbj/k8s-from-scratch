@@ -12,13 +12,10 @@ authorization:
 clusterDomain: "${K8S_CLUSTER_DOMAIN}"
 clusterDNS:
   - ${K8S_CLUSTER_IP_DNS}
-  - 8.8.8.8
-  - 8.8.4.4
-  - 1.1.1.1
 cgroupDriver: systemd
 containerRuntimeEndpoint: "unix:///var/run/containerd/containerd.sock"
 podCIDR: "${K8S_CLUSTER_POD_SUBNET}"
-resolvConf: "/etc/resolv.conf"
+resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/etc/kubernetes/pki/kubelet.crt"
 tlsPrivateKeyFile: "/etc/kubernetes/pki/kubelet.key"

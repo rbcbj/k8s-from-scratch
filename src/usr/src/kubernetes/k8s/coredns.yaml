@@ -12,6 +12,13 @@ metadata:
   name: system:coredns
 rules:
   - apiGroups:
+      - discovery.k8s.io
+    resources:
+      - endpointslices
+    verbs:
+      - list
+      - watch
+  - apiGroups:
       - ""
     resources:
       - endpoints
@@ -53,14 +60,25 @@ metadata:
 data:
   Corefile: |
     .:53 {
+        log . {
+            class denial error
+        }
         errors
-        health
+        health {
+          lameduck 5s
+        }
         ready
+        # the kubernetes cluster domain should be described here for correct dns resolution
+        # the default is cluster.local
         kubernetes cluster.local in-addr.arpa ip6.arpa {
-          pods insecure
-          fallthrough in-addr.arpa ip6.arpa
+            pods insecure
+            fallthrough in-addr.arpa ip6.arpa
         }
         prometheus :9153
+        # investigate loop: https://coredns.io/plugins/loop#troubleshooting
+        # to prevent loop, define the correct resolv.conf as /run/systemd/resolve/resolv.conf
+        # in kubelet-config.yaml
+        forward . /etc/resolv.conf
         cache 30
         loop
         reload
@@ -98,7 +116,7 @@ spec:
         kubernetes.io/os: linux
       containers:
         - name: coredns
-          image: coredns/coredns:1.7.0
+          image: coredns/coredns:1.11.1
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -167,7 +185,7 @@ metadata:
 spec:
   selector:
     k8s-app: kube-dns
-  clusterIP: 10.32.0.10
+  clusterIP: ${K8S_CLUSTER_IP_DNS}
   ports:
     - name: dns
       port: 53

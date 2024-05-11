@@ -7,7 +7,7 @@ cp "/tmp/downloads/kube-controller-manager" \
 chmod +x "/usr/local/sbin/kube"*
 
 mkdir -p "/etc/systemd/system/"
-cp "/usr/src/kubernetes//services/kube-controller-manager.service" "/etc/systemd/system/kube-controller-manager.service"
+cp "/usr/src/kubernetes/services/kube-controller-manager.service" "/etc/systemd/system/kube-controller-manager.service"
 
 # Configure Api Server
 mkdir -p "/var/lib/kubernetes/"

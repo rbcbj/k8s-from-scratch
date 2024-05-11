@@ -30,3 +30,6 @@ setup_containerd
 setup_kube_router
 setup_kubelet
 setup_kube_proxy
+
+# build k8s artifacts to be applied after install
+setup_k8s_artifacts

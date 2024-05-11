@@ -24,7 +24,7 @@ ExecStart=/usr/local/sbin/kube-apiserver \
   --runtime-config='api/all=true' \
   --service-account-key-file=/etc/kubernetes/pki/service-accounts.crt \
   --service-account-signing-key-file=/etc/kubernetes/pki/service-accounts.key \
-  --service-account-issuer=https://${K8S_CLUSTER_DOMAIN}:6443 \
+  --service-account-issuer=https://${K8S_CLUSTER_DOMAIN}:${K8S_CLUSTER_PORT} \
   --service-cluster-ip-range=${K8S_CLUSTER_IP_RANGE} \
   --service-node-port-range=30000-32767 \
   --tls-cert-file=/etc/kubernetes/pki/kube-apiserver.crt \

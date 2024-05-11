@@ -7,8 +7,9 @@ mkdir -p ${CONFIG_DIR}
 
 cat <<CONFIG | tee $CONFIG_FILE
 # cluster config
-K8S_CLUSTER=k8s-use1-prod-shared-001
-K8S_CLUSTER_DOMAIN=kubernetes.local
+K8S_CLUSTER=k8s-cluster-local
+K8S_CLUSTER_DOMAIN=cluster.local
+K8S_CLUSTER_PORT=6443
 
 # node config
 K8S_NODE=$(hostname)
@@ -17,6 +18,7 @@ K8S_NODE_IP=$(ip -f inet addr show eth0 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p'
 # this should match on both kube-apiserver and kube-controller-manager
 K8S_CLUSTER_IP_RANGE=10.32.0.0/24
 K8S_CLUSTER_IP_DNS=10.32.0.10
+K8S_CLUSTER_POD_GATEWAY=10.32.0.1
 K8S_CLUSTER_POD_SUBNET=10.200.0.0/24
 
 ENCRYPTION_KEY_1="$(head -c 32 /dev/urandom | base64)"

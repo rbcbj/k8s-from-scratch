@@ -16,10 +16,10 @@
 
 sleep 5
 
-for config in `ls /usr/src/kubernetes/k8s/*.yaml`; do
+for k8s_artifact in `ls /etc/kubernetes/k8s/*.yaml`; do
   /usr/local/sbin/kubectl --kubeconfig /etc/kubernetes/pki/kube-admin.kubeconfig \
     apply \
-    -f "${config}"
+    -f "${k8s_artifact}"
 done
 
 sleep 5
